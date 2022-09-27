@@ -16,25 +16,33 @@ void setup() {
 
 int brightnessValueBeforeOff;
 int pushButton;
+bool buttonState = false;
 void loop() {
   // put your main code here, to run repeatedly:
 
-  //determine if button is pushed on/off
+ int brightnessValue;
+  //current value of button
   pushButton = digitalRead(D5);
-  int brightnessValue;
-  brightnessValue = analogRead(A0);
+
   Serial.println("button status:"+String(pushButton));
   
- 
+  if(pushButton == 1){
+    buttonState = true;
+  }else{
+    buttonState = false;
+  }
+  //check button state, if on then allow LED brightness to be adjustable w/ converter 
+  if (buttonState == false){
+    //turn off LED
+    digitalWrite(D4,1);
+    buttonState = true;
+  }else{
+    brightnessValue = analogRead(A0);
+    //save brightnees of light before its turn off
+    brightnessValueBeforeOff = brightnessValue;
+    analogWrite(D4,brightnessValueBeforeOff);
+    buttonState = false;
 
-  //send digital signal based on analog value
-  // if(pushButton == 1){
-  //   brightnessValue = analogRead(A0);
-  //   //save value right before light is turned off
-  //   brightnessValue = brightnessValueBeforeOff;
-  // }
-  //turn on/off LED
-  digitalWrite(D4,pushButton);
-  analogWrite(D4,brightnessValue);
+  }
 
 }
